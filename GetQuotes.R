@@ -24,4 +24,14 @@ for(shareNr in 1:length(selectSymbols)) {
   print(paste(selectSymbols[shareNr], " - ", quoteData[shareNr, "Last"], sep=""))
 }
 
-for(i in 1:5) {print(i)}
+# Write to database
+library(RMySQL)
+
+mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+
+rs <- dbSendQuery(mydb, "SHOW DATABASES;")
+
+data <- fetch(rs, n=10)
+huh <- dbHasCompleted(rs)
+dbClearResult(mydb)
+dbDisconnect(mydb)
