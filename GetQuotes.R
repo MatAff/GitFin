@@ -35,9 +35,12 @@
   rs <- dbSendQuery(mydb, "USE finance;")
 
 # Enter data
-  query <- paste("INSERT INTO prices (ticker, price)
-    VALUES ('TEST', '99.99');")
+  for(shareNr in 1:length(selectSymbols)) {
+    query <- paste("INSERT INTO prices (ticker, price) 
+          VALUES ('", "TEST", selectSymbols[shareNr], "', '", quoteData[shareNr, "Last"], "');", sep="")
+    print(query)
   rs <- dbSendQuery(mydb, query)
-
+  }
+  
 # Disconnect
   dbDisconnect(mydb)
