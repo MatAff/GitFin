@@ -40,7 +40,7 @@
   # Deactive
   if(length(deactivate)!=0) {
     deactivate <- paste(c("'",paste(deactivate, collapse="', '"),"'"), collapse="")
-    print(paste("Deactivating: ", activate, sep=""))
+    print(paste("Deactivating: ", deactivate, sep=""))
     query <- paste("UPDATE ticker SET isActive = 0 WHERE symbol in (", deactivate, ");", sep="")
     rs <- dbSendQuery(mydb, query)  
   }
