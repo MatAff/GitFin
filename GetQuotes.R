@@ -1,6 +1,27 @@
 
 # Load packages
   library(quantmod)
+  library(RMySQL)
+
+### GET SYMBOLS FROM DATABASE ###
+  
+# Set up connection
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  on.exit(dbDisconnect(con))
+  
+# Query
+  rs <- dbSendQuery(mydb, "USE finance;")  
+  query <- "SELECT * FROM ticker WHERE isActive ;"
+  rs <- dbSendQuery(mydb, query)  
+  
+
+  
+# Disconnect
+  dbDisconnect(mydb)
+  
+
+  
+  
 
 # Input - Load symbols - Hardcoded
   selectSymbols <- c("AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN", 
@@ -14,7 +35,7 @@
     "TXN", "VIAB", "VOD", "VRSK", "VRTX", "WDC", "WFM", "WYNN", "XLNX", "XRAY", "YHOO")
 
 # Subset for development purposes
-  selectSymbols <- selectSymbols[1:5]
+  # selectSymbols <- selectSymbols[1:5]
 
 # Processing - Get quote
   quoteData <- getQuote(selectSymbols)
@@ -37,7 +58,7 @@
 # Enter data
   for(shareNr in 1:length(selectSymbols)) {
     query <- paste("INSERT INTO prices (ticker, price) 
-          VALUES ('", "TEST", selectSymbols[shareNr], "', '", quoteData[shareNr, "Last"], "');", sep="")
+          VALUES ('", selectSymbols[shareNr], "', '", quoteData[shareNr, "Last"], "');", sep="")
     print(query)
   rs <- dbSendQuery(mydb, query)
   }

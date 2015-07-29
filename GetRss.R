@@ -2,29 +2,26 @@
 # Load packages
 library(XML)
 
-# Get source
-url <- "http://stackoverflow.com/feeds"
-url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"
-con = url(url); htmlCode = readLines(con); close(con)
-xmlfile <- xmlTreeParse(htmlCode)
-xmltop = xmlRoot(xmlfile)
-xmltop[1:5]
-
-# Get subnodes
-subnode <- getNodeSet(xmltop, "//channel/item")
+# Function to get top
+GetTop <- function(url) {
+  con = url(url); htmlCode = readLines(con); close(con)
+  xmlfile <- xmlTreeParse(htmlCode)
+  xmltop = xmlRoot(xmlfile)  
+  return(xmltop)
+}
 
 # Function to extract data from node
-getDetails <- function(nodes) {
+GetNodeDetails <- function(node, timestampTag, titleTag, descTag, linkTag) {
   
   # Process data
-  nData <- xmlSApply(nodes, function(x) xmlSApply(x, xmlValue))
+  nData <- xmlSApply(node, function(x) xmlSApply(x, xmlValue))
+  names(nData) <- gsub(".text", "", names(nData))
   
   # Get elements
-  timeStamp <- nData["pubDate.text"]
-  site <- "fool.com"
-  title <- nData["title.text"]
-  description <- nData["description"]
-  link <- nData["guid.text"]
+  timeStamp <- nData[timestampTag]
+  title <- nData[titleTag]
+  description <- nData[descTag]
+  link <- nData[linkTag]
   
   # Tickers
   tData <- as.data.frame(nData, stringsAsFactors=FALSE)
@@ -33,19 +30,54 @@ getDetails <- function(nodes) {
   tickers <- paste(tickers,collapse=",")
   
   # Create data frame to return
-  returnData <- data.frame(timeStamp, site, title, description, link, tickers, row.names = NULL)
+  returnData <- data.frame(timeStamp, title, description, link, tickers, row.names = NULL)
   
   # Return data frame
   return(returnData)
   
 }
 
-# Loop through list to pull data and organize
-rData <- lapply(subnode, getDetails)
-rData <- as.data.frame(do.call(rbind, rData))
+ProcessTop <- function(siteName, xmltop, xpath, timestampTag, titleTag, descTag, linkTag) {
+
+  nodes <- getNodeSet(xmltop, xpath)
+  nodeData <- lapply(nodes, GetNodeDetails, timestampTag, titleTag, descTag, linkTag)
+  returnData <- as.data.frame(do.call(rbind, nodeData))
+  returnData <- cbind(siteName, returnData)
+  return(returnData)
+  
+}
+
+allNewsData <- c()
+
+# SEEKING ALPHA
+xmltop <- GetTop("http://seekingalpha.com/feed.xml")
+newsData <- ProcessTop("seekingalpha.com", xmltop, "//channel/item", "pubDate", "title", "title", "link")
+allNewsData <- rbind(allNewsData, newsData)
+
+# Motley Fool
+xmltop <- GetTop("http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2")
+newsData <- ProcessTop("fool.com", xmltop, "//channel/item", "pubDate", "title", "description", "guid")
+allNewsData <- rbind(allNewsData, newsData)
+
+# Wall Street Journal
+xmltop <- GetTop("http://www.wsj.com/xml/rss/3_7031.xml")
+newsData <- ProcessTop("wsj.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link")
+allNewsData <- rbind(allNewsData, newsData)
+
+ 
+
+# Debug info
+#xpath <- "//channel/item"
+#siteName <- "seekingalpha.com"
+#timestampTag <- "pubDate"
+#titleTag <- "title"
+#descTag <- "title"
+#linkTag <- "link"
+
+
+
 
 # Display data
-print(rData)
 
 # Write to database
 library(RMySQL)
