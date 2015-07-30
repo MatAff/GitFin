@@ -17,6 +17,7 @@
   rs <- dbSendQuery(mydb, query)  
   ticker <- fetch(rs)
   row.names(ticker) <- ticker[,"symbol"]
+  print(ticker[1:6,c("symbol", "tickerID")])
   selectSymbols <- as.vector(ticker[,"symbol"]) 
   
 # Disconnect
@@ -37,7 +38,7 @@
   qData[,"symbol"] <- row.names(qData)
   
 # Print data to screen - for dev purposes
-  print(qData[,c("symbol", "Trade Time", "Last")])
+  print(qData[1:6,c("symbol", "Trade Time", "Last")])
 
 ############################
 ### ADD DATA TO DATABASE ###  
@@ -52,7 +53,8 @@
 
 # Enter data
   for(sNr in 1:nrow(qData)) {
-    tickerID <- ticker[qData[,"symbol"], "tickerID"]
+    tickerID <- ticker[qData[sNr,"symbol"], "tickerID"]
+    print(tickerID)
     query <- paste("INSERT INTO quote (timestamp, tickerID, price)
       VALUES ('", qData[sNr, "Trade Time"], "', '", tickerID, "', '", qData[sNr, "Last"], "');", sep="")
     rs <- dbSendQuery(mydb, query)
