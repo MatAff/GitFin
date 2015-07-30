@@ -57,6 +57,7 @@
     print(tickerID)
     query <- paste("INSERT INTO quote (timestamp, tickerID, price)
       VALUES ('", qData[sNr, "Trade Time"], "', '", tickerID, "', '", qData[sNr, "Last"], "');", sep="")
+    print(query)
     rs <- dbSendQuery(mydb, query)
   }
   
