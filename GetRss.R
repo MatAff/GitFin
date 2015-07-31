@@ -139,7 +139,11 @@ aData[,"timeStamp"] <- GetTime(aData[,"timeStamp"])
 ###################################
 
 # Set up connection
-dbFinConnect()
+# dbFinConnect()
+
+mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+on.exit(dbDisconnect(mydb))
+rs <- dbSendQuery(mydb, "USE finance;")
 
 # Enter data
 for(rowNr in 1:nrow(aData)) {
