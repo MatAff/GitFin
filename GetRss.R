@@ -147,7 +147,7 @@ rs <- dbSendQuery(mydb, "USE finance;")
 
 # Enter data
 for(rowNr in 1:nrow(aData)) {
- dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickers"), 
+ dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickerTags"), 
           c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])) 
 }
 
