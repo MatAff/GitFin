@@ -1,6 +1,6 @@
 # Load packages
 library(XML)
-library("dbFunctions.R")
+source("dbFunctions.R")
 
 #################################################
 ### FUNCTIONS FOR PULLING AND PROCESSING DATA ###
