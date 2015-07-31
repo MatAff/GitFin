@@ -142,17 +142,12 @@ aData[,"timeStamp"] <- GetTime(aData[,"timeStamp"])
 dbFinConnect()
 
 # Enter data
-for(rowNr in 1:nrow(rData)) {
+for(rowNr in 1:nrow(aData)) {
  dbFinAdd("basicnews", c("n_timestamp", "site", "title", "description", "link", "tickers"), 
-          c(rData[rowNr, c("timeStamp","site", "title", "description", "link",  "tickers")])) 
+          c(aData[rowNr, c("timeStamp","site", "title", "description", "link",  "tickers")])) 
 }
 
 # Disconnect
 dbFinDisconnect()
-
-test <- "A"
-
-gsub(c("A", "B"), c("1", "2"), test)
-
 
 
