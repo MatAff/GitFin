@@ -23,6 +23,6 @@ CREATE TABLE  basicnews  (
    url  varchar(255),
    tickerTags  varchar(255), 
   PRIMARY KEY ( newsID ),
-  UNIQUE KEY uniq_TimeStamp_Title (timestamp, title),
+  UNIQUE KEY uniq_TimeStamp_Title (timestamp, title)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
