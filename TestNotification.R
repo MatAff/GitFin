@@ -7,7 +7,7 @@
 ########################
 
   noticeText <- "This is a test"
-  dateTimeText <- as.POSIXlt(Sys.time(), "America/New_York") 
+  dateTimeText <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
 
   dbFinConnect()
   dbNotification(noticeText, dateTimeText, 1)
