@@ -65,19 +65,20 @@
 # Disconnect
   dbDisconnect(mydb)
   
-  
 ########################
 ### ADD NOTIFICATION ###
 ########################
   
   noticeText <- paste("Added ", nrow(aData), " quotes to quote table", sep = "")
-  dateTimeText <- as.POSIXlt(Sys.time(), "America/New_York") 
+    
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
   
-  dbFinConnect()
-  dbNotification(dateTimeText, noticeText, 10)
+  dbNotification(noticeText, 10)
   dbFinDisconnect()
       
-  #format(Sys.time(), "%F %H:%M:%S")
+
   
   
   

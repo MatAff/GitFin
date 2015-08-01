@@ -32,4 +32,5 @@ dbFinAdd <- function(table, fields, values) {
 dbNotification <- function(notice, importance) {
   timeStamp <- dateTimeText <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
   dbFinAdd("notification", c("timestamp", "notice", "importance"), c(timeStamp, notice, importance))
+  #format(Sys.time(), "%F %H:%M:%S")
 }
