@@ -4,6 +4,19 @@
   library(RMySQL)
   source("dbFunctions.R")
 
+########################
+### ADD NOTIFICATION ###
+########################
+  
+  noticeText <- "Starting quote collection process"
+  
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+  dbNotification(noticeText, 10)
+  dbFinDisconnect()
+  
 #############################
 # GET SYMBOLS FROM DATABASE #
 #############################
