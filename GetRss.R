@@ -5,6 +5,19 @@
   source("dbFunctions.R")
   source("SourceTimeFunction.R")
 
+########################
+### ADD NOTIFICATION ###
+########################
+  
+  noticeText <- "Starting news collection process"
+  
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+  dbNotification(noticeText, 10)
+  dbFinDisconnect()
+  
 #################################################
 ### FUNCTIONS FOR PULLING AND PROCESSING DATA ###
 #################################################
