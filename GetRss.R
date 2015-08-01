@@ -102,6 +102,35 @@ aData <- aData[order(aData[,"timeStamp"], decreasing=TRUE), ]
 print(head(aData))
 print(dim(aData))
 
+##############################
+### GET INFO FROM DATABASE ###
+##############################
+  
+  # Connect
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+  # Get info
+  rs <- dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews;")
+  startNumberOfRecords <- fetch(rs)
+  print(startNumberOfRecords)
+  
+  rs <- dbSendQuery(mydb, "SELECT MAX(timestamp) FROM basicnews;")
+  dateTimeLastRecord <- fetch(rs)
+  print(dateTimeLastRecord)
+  
+  # Disconnect
+  dbFinDisconnect()
+  
+############################
+### SUBSET NEW DATA ONLY ###  
+############################
+  
+  # dateTimeLastRecord <- "2015-08-01 14:31:47" # Debug line
+  aData <- aData[as.POSIXct(aData[,"timeStamp"],tz="America/New_York") > ymd_hms(dateTimeLastRecord, tz="America/New_York") + seconds(30),]
+  print(head(aData))
+  
 ###################################
 ### ADD INFORMATION TO DATABASE ###
 ###################################
@@ -131,8 +160,15 @@ noticeText <- "Added news"
 mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
 on.exit(dbDisconnect(mydb))
 rs <- dbSendQuery(mydb, "USE finance;")
-
 dbNotification(noticeText, 10)
+
+  # Get info
+  rs <- dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews;")
+  endNumberOfRecords <- fetch(rs)
+  recordsAdded <- endNumberOfRecords - startNumberOfRecords
+  noticeText <- paste("Added ", recordsAdded, " news records", sep="")
+  dbNotification(noticeText, 20)
+  
 dbFinDisconnect()
 
 
