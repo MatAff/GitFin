@@ -13,7 +13,7 @@
   #rs <- dbSendQuery(mydb, "USE finance;")
   
   dbFinConnect()
-  dbNotification(dateTimeText, noticeText, 1)
+  dbNotification(noticeText, 1)
   dbFinDisconnect()
 
   
