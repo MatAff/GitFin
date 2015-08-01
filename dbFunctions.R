@@ -7,6 +7,7 @@ dbFinConnect <- function() {
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
   on.exit(dbDisconnect(mydb))
   rs <- dbSendQuery(mydb, "USE finance;")
+  assign("mydb", mydb, envir = .GlobalEnv)
 }
 
 # Disconnect from database
@@ -27,4 +28,7 @@ dbFinAdd <- function(table, fields, values) {
 #values <- c("aaa", "aaa", "titles", "blablabla", "wwww.com", "abcde")
 #dbFinAdd(table, fields, values)
 
-
+# Add notification
+dbNotification <- function(timeStamp, notice, importance) {
+  dbFinAdd("notification", c("timestamp", "notice", "importance"), c(timeStamp, notice, importance))
+}

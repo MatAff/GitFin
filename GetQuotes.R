@@ -2,10 +2,11 @@
 # Load packages
   library(quantmod)
   library(RMySQL)
+  source("dbFunctions.R")
 
-#################################
-### GET SYMBOLS FROM DATABASE ###
-#################################
+#############################
+# GET SYMBOLS FROM DATABASE #
+#############################
   
 # Set up connection
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
@@ -26,9 +27,9 @@
 # Display symbols
   print(selectSymbols)
 
-##################
-### GET QUOTES ###
-##################
+##############
+# GET QUOTES #
+##############
 
 # Debug sample symbols
   # selectSymbols <- c("AAPL", "ADBE", "ADI", "ADP", "ADSK", "AKAM", "ALTR", "ALXN", "AMAT", "AMGN", "AMZN")  
@@ -40,9 +41,9 @@
 # Print data to screen - for dev purposes
   print(qData[1:6,c("symbol", "Trade Time", "Last")])
 
-############################
-### ADD DATA TO DATABASE ###  
-############################
+########################
+# ADD DATA TO DATABASE #
+########################
   
 # Set up connection
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
@@ -63,3 +64,38 @@
   
 # Disconnect
   dbDisconnect(mydb)
+  
+  
+########################
+### ADD NOTIFICATION ###
+########################
+  
+  noticeText <- paste("Added ", nrow(aData), " quotes to quote table", sep = "")
+  dateTimeText <- as.POSIXlt(Sys.time(), "America/New_York") 
+  
+  dbFinConnect()
+  dbNotification(dateTimeText, noticeText, 10)
+  dbFinDisconnect()
+      
+  #format(Sys.time(), "%F %H:%M:%S")
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
