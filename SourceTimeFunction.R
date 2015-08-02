@@ -24,13 +24,13 @@ GetTime <- function(dateTimeText) {
   
   # Get month tag
     month <- regmatches(dateTimeText, gregexpr("[a-zA-Z]{3}", dateTimeText))
+    dateTimeText <- sapply(1:length(dateTimeText), function(x) gsub(month[x], "", dateTimeText[x]))
     monthTags <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     monthNrs <- c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
     for(m in 1:12) { month <- sapply(1:length(month), function(x) gsub(monthTags[m], monthNrs[m], month[x])) }
-    dateTimeText <- sapply(1:length(dateTimeText), function(x) gsub(month[x], "", dateTimeText[x]))
   
   # Date
-    date <- regmatches(dateTimeText, gregexpr(" [0-9]{2} ", dateTimeText))
+    date <- regmatches(dateTimeText, gregexpr(" [0-9]{1,2} ", dateTimeText))
     date <- gsub(" ", "", date)
     dateTimeText <- sapply(1:length(dateTimeText), function(x) gsub(date[x], "", dateTimeText[x]))
   
@@ -58,7 +58,7 @@ GetTime <- function(dateTimeText) {
 }
 
 # Test dates
-#dateTimeText <- c("Sat, 01 Aug 2015 14:59:01 -0400", "Sat, 01 Aug 2015 18:45:03 GMT", "Sat, 01 Aug 2015 14:01:46 EDT" )
+#dateTimeText <- c("Sat, 01 Aug 2015 14:59:01 -0400", "Sat, 01 Aug 2015 18:45:03 GMT", "Sat, 01 Aug 2015 14:01:46 EDT", "Sun, 02 Aug 2015 17:11:35 GMT")
 #GetTime(dateTimeText)
 
 

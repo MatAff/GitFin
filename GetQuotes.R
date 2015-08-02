@@ -2,7 +2,7 @@
 # Load packages
   library(quantmod)
   library(RMySQL)
-  source("dbFunctions.R")
+  source("/home/finance/Gitfin/dbFunctions.R")
 
 ########################
 ### ADD NOTIFICATION ###
