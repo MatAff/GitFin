@@ -3,8 +3,8 @@
   library(XML)
   library(lubridate)
   if(Sys.info()["nodename"]!="MA2") {
-    source("//home/finance/Gitfin/dbFunctions.R")
-    source("//home/finance/Gitfin/SourceTimeFunction.R")
+    source("/home/finance/GitFin/dbFunctions.R")
+    source("/home/finance/GitFin/SourceTimeFunction.R")
   } else { 
     source("SourceTimeFunction.R") 
   } 
