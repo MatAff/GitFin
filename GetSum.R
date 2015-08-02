@@ -27,7 +27,7 @@ notifications <- notifications[notifications[,"importance"]>noticeImportanceCutV
 print(paste("Nr of active tickers: ", nrActiveTickers, sep=""))
 print(paste("Quote total: ", nrQuotesTotal, " Quote today: ", nrQuotesToday, sep=""))
 print(paste("News total: ", nrNewsRecords, " News today: ", nrNewsRecordsToday, sep=""))
-print(tail(notifications,15)
+print(tail(notifications,15))
 
 # Disconnect
 dbFinDisconnect()
