@@ -2,10 +2,13 @@
 # Load packages
   library(XML)
   library(lubridate)
-  #source("/home/finance/Gitfin/dbFunctions.R")
-  source("SourceTimeFunction.R")
-
-
+  if(Sys.info()["nodename"]!="MA2") {
+    source("/home/finance/GitFin/dbFunctions.R")
+    source("/home/finance/GitFin/SourceTimeFunction.R")
+  } else { 
+    source("SourceTimeFunction.R") 
+  } 
+  
 #################################################
 ### FUNCTIONS FOR PULLING AND PROCESSING DATA ###
 #################################################
@@ -23,9 +26,9 @@ GetNodeDetails <- function(node, timeStampTag, titleTag, descTag, linkTag, getTi
   
   # Process data
   nData <- xmlSApply(node, function(x) xmlSApply(x, xmlValue))
-  names(nData) <- gsub(".text", "", names(nData))
   nData <- unlist(nData)
-  
+  names(nData) <- gsub(".text", "", names(nData))
+    
   # Get elements
   timeStamp <- nData[timeStampTag]
   title <- nData[titleTag]
@@ -92,15 +95,20 @@ aData <- rbind(aData, newsData)
 ### SANDBOX ###
 ###############
   
+
   
-xmltop <- GetTop("http://www.forbes.com/markets/index.xml")
-newsData <- ProcessTop("forbes.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
-aData <- rbind(aData, newsData) 
-  
-  xpath <- "//rss/channel/item"
-  
+  xmltop <- GetTop("http://www.apple.com/pr/feeds/pr.rss")
+  newsData <- ProcessTop("apple.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
+  aData <- rbind(aData, newsData)  
 
   # Sub process
+  xpath <- "//rss/channel/item"
+  timeStampTag <- "pubDate"
+  titleTag <- "title"
+  descTag <- "description"
+  linkTag <- "link"
+  getTicker <- FALSE
+  
   nodes <- getNodeSet(xmltop, xpath)
   nodeData <- lapply(nodes, GetNodeDetails, timeStampTag, titleTag, descTag, linkTag, getTicker)
   returnData <- as.data.frame(do.call(rbind, nodeData), stringsAsFactors = FAlSE)
@@ -108,15 +116,11 @@ aData <- rbind(aData, newsData)
   
   node <- nodes[[2]]
   nData <- xmlSApply(node, function(x) xmlSApply(x, xmlValue))
-  names(nData) <- gsub(".text", "", names(nData))
   nData <- unlist(nData)
+  names(nData) <- gsub(".text", "", names(nData))
   nData
     
-  timeStampTag <- "pubDate"
-  titleTag <- "title"
-  descTag <- "description"
-  linkTag <- "link"
-  getTicker <- FALSE
+ 
   
   # Get elements
   timeStamp <- nData[timeStampTag]
@@ -138,9 +142,6 @@ aData <- rbind(aData, newsData)
   
   
   
-  xmltop <- GetTop("http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss")
-  newsData <- ProcessTop("marketwatch.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
-  aData <- rbind(aData, newsData)  
   
   http://podcast.cnbc.com/mmpodcast/fastmoney.xml
   

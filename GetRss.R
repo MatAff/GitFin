@@ -40,8 +40,8 @@
     
     # Process data
     nData <- xmlSApply(node, function(x) xmlSApply(x, xmlValue))
-    names(nData) <- gsub(".text", "", names(nData))
     nData <- unlist(nData)
+    names(nData) <- gsub(".text", "", names(nData))
     
     # Get elements
     timeStamp <- nData[timeStampTag]
@@ -104,6 +104,16 @@
   newsData <- ProcessTop("forbes.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
   aData <- rbind(aData, newsData) 
 
+# Market Watch
+  #xmltop <- GetTop("http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss")
+  #newsData <- ProcessTop("marketwatch.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
+  #aData <- rbind(aData, newsData)  
+
+# Apple.com
+  #xmltop <- GetTop("http://www.apple.com/pr/feeds/pr.rss")
+  #newsData <- ProcessTop("apple.com", xmltop, "//rss/channel/item", "pubDate", "title", "description", "link", FALSE)
+  #aData <- rbind(aData, newsData)  
+  
 # Show data collected
   head(aData); dim(aData)
 
@@ -115,6 +125,7 @@
   aData[,"description"] <- gsub("'", "", aData[,"description"])
   aData[,"timeStamp"] <- GetTime(aData[,"timeStamp"])
   aData <- aData[order(aData[,"timeStamp"], decreasing=TRUE), ]
+  aData <- aData[,c("siteName", "timeStamp", "title", "description", "link", "tickers")]
   
   print(head(aData))
   print(dim(aData))
