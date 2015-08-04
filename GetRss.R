@@ -66,10 +66,10 @@
   if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
   
 # Forbes  
-  url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop)
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  #url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
+  #xmltop <- GetTop(url)
+  #newsData <- ProcessTop(siteName, xmltop)
+  #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
   
 # Market Watch  
   url <- "http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss"; siteName <- "marketwatch.com"
