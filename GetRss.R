@@ -111,7 +111,8 @@ recordsAdded <- 0
   rs <- dbSendQuery(mydb, "USE finance;")
   
 # Loop and add
-  for(rowNr in 1:nrow(aData)) {
+  if(nrow(aData)>0){
+    for(rowNr in 1:nrow(aData)) {
   
     # Check exists
       curTitle <- aData[rowNr,"title"]
@@ -126,6 +127,9 @@ recordsAdded <- 0
                c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])) 
         recordsAdded <- recordsAdded + 1
       }
+  }
+  } else {
+    print("no news data to add")
   }
   
 # Disconnect
