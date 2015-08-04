@@ -23,7 +23,16 @@
 ### ADD NOTIFICATION ###
 ########################
   
-  dbNotificationConnect("Starting news collection process", 10)
+# Connect
+  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+
+# Add message
+  dbNotification("Starting news collection process", 10)
+  
+# Disconnect
+  dbFinDisconnect()
   
 #################
 ### PULL DATA ###
@@ -126,7 +135,17 @@ recordsAdded <- 0
 ### ADD NOTIFICATION ###
 ########################
 
+# Connect
+  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+# Add message
   dbNotificationConnect(paste("Added", recordsAdded, "news records", collapse=" "), 10)
+  
+# Disconnect
+  dbFinDisconnect()
+  
   
   
   

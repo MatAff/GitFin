@@ -55,7 +55,15 @@ dbNotificationConnect <- function(notice, importance) {
   
   # Add notice
   timeStamp <- dateTimeText <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
-  dbFinAdd("notification", c("timestamp", "notice", "importance"), c(timeStamp, notice, importance))
+  table <- "notification"
+  fields <- c("timestamp", "notice", "importance")
+  values <- c(timeStamp, notice, importance)
+  
+  fields <- paste(fields, collapse=", ")
+  values <- paste(values, collapse="', '")
+  query <- paste("INSERT INTO ", table, " (", fields, ") VALUES ('", values, "');", sep="")
+  print(query)
+  rs <- dbSendQuery(mydb, query)  
   
   # Disconnect
   dbDisconnect(mydb)
