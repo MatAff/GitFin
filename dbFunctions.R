@@ -2,9 +2,19 @@
 # Load packages
 library(RMySQL)
 
+if(Sys.info()["nodename"]!="MA2") {
+  myHost <- "localhost"
+  myUser <- "finance"
+  myPassword <- "nederland"
+} else { 
+  myHost <- "ec2-54-173-22-144.compute-1.amazonaws.com"
+  myUser <- "remote"
+  myPassword <- "nederland"
+}
+
 # Connect to database - Set up connection and select database
 dbFinConnect <- function() {
-  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
   on.exit(dbDisconnect(mydb))
   rs <- dbSendQuery(mydb, "USE finance;")
   assign("mydb", mydb, envir = .GlobalEnv)
@@ -30,7 +40,25 @@ dbFinAdd <- function(table, fields, values) {
 
 # Add notification
 dbNotification <- function(notice, importance) {
-  timeStamp <- dateTimeText <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
+  timeStamp <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
   dbFinAdd("notification", c("timestamp", "notice", "importance"), c(timeStamp, notice, importance))
   #format(Sys.time(), "%F %H:%M:%S")
 }
+
+# Add notification
+dbNotificationConnect <- function(notice, importance) {
+  
+  # Connect 
+  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+  # Add notice
+  timeStamp <- dateTimeText <- as.character(as.POSIXlt(Sys.time(), "America/New_York"))
+  dbFinAdd("notification", c("timestamp", "notice", "importance"), c(timeStamp, notice, importance))
+  
+  # Disconnect
+  dbDisconnect(mydb)
+  
+}
+
