@@ -48,10 +48,10 @@
   if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
 
 # Motley Fool
-  url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"; siteName <- "fool.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop, linkTag="guid", getTicker=TRUE)
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  #url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"; siteName <- "fool.com"
+  #xmltop <- GetTop(url)
+  #newsData <- ProcessTop(siteName, xmltop, linkTag="guid", getTicker=TRUE)
+  #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
 
 # Wall Street Journal 
   url <- "http://www.wsj.com/xml/rss/3_7031.xml"; siteName <- "wsj.com"
