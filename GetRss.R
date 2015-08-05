@@ -78,11 +78,11 @@
   
 # Forbes  
   if(T) {
-    url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
+    try(url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
     print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop)
-    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) })
   }
   
 # Market Watch  
