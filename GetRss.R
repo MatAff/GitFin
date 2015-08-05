@@ -146,8 +146,8 @@ recordsAdded <- 0
     # Add if doesn't exist
       if(exist==FALSE) {
         try(dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickerTags"), 
-               c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])) 
-        recordsAdded <- recordsAdded + 1)
+               c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])))
+        recordsAdded <- recordsAdded + 1
       }
   }
   } else {
