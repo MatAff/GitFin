@@ -16,7 +16,6 @@
     myHost <- "ec2-54-173-22-144.compute-1.amazonaws.com"
     myUser <- "remote"
     myPassword <- "nederland"
-    
   } 
   
 ########################
@@ -42,43 +41,62 @@
   aData <- c()
 
 # SEEKING ALPHA
-  url <- "http://seekingalpha.com/feed.xml"; siteName <- "seekingalpha.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop, descTag=NA, getTicker=FALSE)
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://seekingalpha.com/feed.xml"; siteName <- "seekingalpha.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop, descTag=NA, getTicker=FALSE)
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
 
 # Motley Fool
-  #url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"; siteName <- "fool.com"
-  #xmltop <- GetTop(url)
-  #newsData <- ProcessTop(siteName, xmltop, linkTag="guid", getTicker=TRUE)
-  #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"; siteName <- "fool.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop, linkTag="guid", getTicker=TRUE)
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
 
 # Wall Street Journal 
-  url <- "http://www.wsj.com/xml/rss/3_7031.xml"; siteName <- "wsj.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop, xpath="//channel/item", linkTag="guid")
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://www.wsj.com/xml/rss/3_7031.xml"; siteName <- "wsj.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop, xpath="//channel/item", linkTag="guid")
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
 
 # Financial Times
-  url <- "http://www.ft.com/rss/markets"; siteName <- "ft.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop, linkTag="guid")
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://www.ft.com/rss/markets"; siteName <- "ft.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop, linkTag="guid")
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
   
 # Forbes  
-  #url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
-  #xmltop <- GetTop(url)
-  #newsData <- ProcessTop(siteName, xmltop)
-  #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop)
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
   
 # Market Watch  
-  url <- "http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss"; siteName <- "marketwatch.com"
-  xmltop <- GetTop(url)
-  newsData <- ProcessTop(siteName, xmltop)
-  if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  if(T) {
+    url <- "http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss"; siteName <- "marketwatch.com"
+    print(siteName)
+    xmltop <- GetTop(url)
+    newsData <- ProcessTop(siteName, xmltop)
+    if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
+  }
   
 # Apple.com  
  # url <- "http://www.apple.com/pr/feeds/pr.rss"; siteName <- "apple.com"
+  #print(siteName)
   #xmltop <- GetTop(url)
   #newsData <- ProcessTop(siteName, xmltop)
   #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -116,16 +134,18 @@ recordsAdded <- 0
   
     # Check exists
       curTitle <- aData[rowNr,"title"]
-      query <- paste("SELECT COUNT(*) FROM basicnews WHERE title='", curTitle, "';", sep="")
+      curTimeStamp <- gsub(" [A-Z]{3}", "", aData[rowNr,"timeStamp"])
+      query <- paste("SELECT COUNT(*) FROM basicnews WHERE title='", curTitle, "' AND timestamp='", curTimeStamp, "';", sep="")
       rs <- dbSendQuery(mydb, query)  
       if(fetch(rs)==0) { exist=FALSE } else { exist=TRUE }
-      print(exist)
+      dbClearResult(dbListResults(mydb)[[1]])
+      print(paste("News exists:",exist))
                    
     # Add if doesn't exist
       if(exist==FALSE) {
-        dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickerTags"), 
+        try(dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickerTags"), 
                c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])) 
-        recordsAdded <- recordsAdded + 1
+        recordsAdded <- recordsAdded + 1)
       }
   }
   } else {
@@ -149,64 +169,4 @@ recordsAdded <- 0
   
 # Disconnect
   dbFinDisconnect()
-  
-  
-  
-  
-### OLD CODE BELOW ### OLD CODE BELOW ### OLD CODE BELOW ### OLD CODE BELOW ### OLD CODE BELOW ### OLD CODE BELOW ###
-  
-  ##############################
-  ### GET INFO FROM DATABASE ###
-  ##############################
-  
-  # Connect
-  #mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
-  #on.exit(dbDisconnect(mydb))
-  #rs <- dbSendQuery(mydb, "USE finance;")
-  
-  # Get info
-  #rs <- dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews;")
-  #startNumberOfRecords <- fetch(rs)
-  #print(startNumberOfRecords)
-  
-  # Disconnect
-  #dbFinDisconnect()
-  
-  
-  # rs <- dbSendQuery(mydb, "SELECT MAX(timestamp) FROM basicnews;")
-  #  dateTimeLastRecord <- fetch(rs)
-  #  print(dateTimeLastRecord)
-  
-
-  ############################
-  ### SUBSET NEW DATA ONLY ###  
-  ############################
-  
-  # dateTimeLastRecord <- "2015-08-01 14:31:47" # Debug line
-  #aData <- aData[as.POSIXct(aData[,"timeStamp"],tz="America/New_York") > ymd_hms(dateTimeLastRecord, tz="America/New_York") + seconds(30),]
-  #print(head(aData))
-  
-  #for(rowNr in 1:nrow(aData)) {
-  #  dbFinAdd("basicnews", c("timestamp", "source", "title", "description", "url", "tickerTags"), 
-  #           c(aData[rowNr, c("timeStamp","siteName", "title", "description", "link",  "tickers")])) 
-  #}
-  
-  
-  #noticeText <- "Added news"
-  
-  #mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
-  #on.exit(dbDisconnect(mydb))
-  #rs <- dbSendQuery(mydb, "USE finance;")
-  #dbNotification(noticeText, 10)
-  
-  # Get info
-  #rs <- dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews;")
-  #endNumberOfRecords <- fetch(rs)
-  #recordsAdded <- endNumberOfRecords - startNumberOfRecords
-  #noticeText <- paste("Added ", recordsAdded, " news records", sep="")
-  #dbNotification(noticeText, 20)
-  
-  # Disconnect 
-  #dbFinDisconnect()
-  
   

@@ -29,7 +29,8 @@ dbFinAdd <- function(table, fields, values) {
   values <- paste(values, collapse="', '")
   query <- paste("INSERT INTO ", table, " (", fields, ") VALUES ('", values, "');", sep="")
   print(query)
-  rs <- dbSendQuery(mydb, query)  
+  try(rs <- dbSendQuery(mydb, query))
+  dbClearResult(dbListResults(mydb)[[1]])
 }
 
 # Test function
