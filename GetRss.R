@@ -77,7 +77,7 @@
   }
   
 # Forbes  
-  if(T) {
+  if(F) {
     url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
     print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
@@ -113,7 +113,8 @@
   
   # Subset based on time
   timeNow <- as.POSIXlt(Sys.time(), "America/New_York") #format(Sys.time(), "%F %H:%M:%S")
-  timeCutOff <- timeNow - hours(2); print(paste("Cut off time:", timeCutOff))
+  timeCutOff <- timeNow - hours(7); print(paste("Cut off time:", timeCutOff))
+  
   aData <- aData[aData[,"timeStamp"]>timeCutOff, ]
   head(aData); dim(aData)
 
