@@ -43,7 +43,7 @@
 # SEEKING ALPHA
   if(T) {
     url <- "http://seekingalpha.com/feed.xml"; siteName <- "seekingalpha.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop, descTag=NA, getTicker=FALSE)
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -52,7 +52,7 @@
 # Motley Fool
   if(T) {
     url <- "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2"; siteName <- "fool.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop, linkTag="guid", getTicker=TRUE)
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -61,7 +61,7 @@
 # Wall Street Journal 
   if(T) {
     url <- "http://www.wsj.com/xml/rss/3_7031.xml"; siteName <- "wsj.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop, xpath="//channel/item", linkTag="guid")
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -70,7 +70,7 @@
 # Financial Times
   if(T) {
     url <- "http://www.ft.com/rss/markets"; siteName <- "ft.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop, linkTag="guid")
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -79,7 +79,7 @@
 # Forbes  
   if(T) {
     url <- "http://www.forbes.com/markets/index.xml"; siteName <- "forbes.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop)
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -88,7 +88,7 @@
 # Market Watch  
   if(T) {
     url <- "http://www.marketwatch.com/rss/newsfinder/AllMarketWatchNews/?p=type&pv=Stocks%20to%20Watch&t=Stocks%20to%20Watch&dist=sr_rss"; siteName <- "marketwatch.com"
-    print(siteName)
+    print(paste("Now getting data from:", siteName))
     xmltop <- GetTop(url)
     newsData <- ProcessTop(siteName, xmltop)
     if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -96,7 +96,7 @@
   
 # Apple.com  
  # url <- "http://www.apple.com/pr/feeds/pr.rss"; siteName <- "apple.com"
-  #print(siteName)
+  #print(paste("Now getting data from:", siteName))
   #xmltop <- GetTop(url)
   #newsData <- ProcessTop(siteName, xmltop)
   #if(CheckNewsData(newsData, siteName)==TRUE) { aData <- rbind(aData, newsData) }
@@ -113,7 +113,7 @@
   
   # Subset based on time
   timeNow <- as.POSIXlt(Sys.time(), "America/New_York") #format(Sys.time(), "%F %H:%M:%S")
-  timeCutOff <- timeNow - hours(2)
+  timeCutOff <- timeNow - hours(2); print(paste("Cut off time:", timeCutOff))
   aData <- aData[aData[,"timeStamp"]>timeCutOff, ]
   head(aData); dim(aData)
 
@@ -123,13 +123,14 @@
 
 recordsAdded <- 0  
   
-# Connect
-  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
-  on.exit(dbDisconnect(mydb))
-  rs <- dbSendQuery(mydb, "USE finance;")
-  
 # Loop and add
   if(nrow(aData)>0){
+    
+    # Connect
+    mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+    on.exit(dbDisconnect(mydb))
+    rs <- dbSendQuery(mydb, "USE finance;")
+    
     for(rowNr in 1:nrow(aData)) {
   
     # Check exists
@@ -165,7 +166,7 @@ recordsAdded <- 0
   rs <- dbSendQuery(mydb, "USE finance;")
   
 # Add message
-  dbNotificationConnect(paste("Added", recordsAdded, "news records", collapse=" "), 10)
+  dbNotification(paste("Added", recordsAdded, "news records", collapse=" "), 10)
   
 # Disconnect
   dbFinDisconnect()
