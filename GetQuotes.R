@@ -4,6 +4,8 @@
   library(RMySQL)
   source("/home/finance/GitFin/dbFunctions.R")
 
+  print("HI")
+  
 ########################
 ### ADD NOTIFICATION ###
 ########################
