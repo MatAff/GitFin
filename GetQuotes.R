@@ -1,6 +1,4 @@
 
-print("HI! why is this not showing!!! ")
-
 # Load packages
   library(quantmod)
   library(RMySQL)
