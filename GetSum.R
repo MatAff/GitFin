@@ -12,15 +12,15 @@
   # Quotes
     nrActiveTickers <- fetch(dbSendQuery(mydb, "SELECT COUNT(*) FROM ticker WHERE isActive = 1;"))
     nrQuotesTotal <- fetch(dbSendQuery(mydb, "SELECT COUNT(*) FROM quote;"))
-    nrQuotesToday <- fetch(dbSendQuery(mydb, "SELECT COUNT(*) FROM quote WHERE timestamp >= CURDATE();"))
+    nrQuotesToday <- fetch(dbSendQuery(mydb, paste("SELECT COUNT(*) FROM quote WHERE timestamp >= '", Sys.Date(), "';", sep="")))
 
   # News
     nrNewsRecords <- fetch(dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews;"))
-    nrNewsRecordsToday <- fetch(dbSendQuery(mydb, "SELECT COUNT(*) FROM basicnews WHERE timestamp >= CURDATE();"))
+    nrNewsRecordsToday <- fetch(dbSendQuery(mydb, paste("SELECT COUNT(*) FROM basicnews WHERE timestamp >= '", Sys.Date(), "';", sep="")))
 
   # Notifications
     noticeImportanceCutValue <- 0
-    notifications <- fetch(dbSendQuery(mydb, "SELECT * FROM notification WHERE timestamp >= CURDATE();"))
+    notifications <- fetch(dbSendQuery(mydb, paste("SELECT * FROM notification WHERE timestamp >= '", Sys.Date(), "';", sep="")))
     notifications <- notifications[notifications[,"importance"]>noticeImportanceCutValue,]
 
 # Display info
