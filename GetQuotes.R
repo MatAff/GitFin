@@ -80,6 +80,7 @@ if(file.exists("dbFunctions.R")) {
   rs <- dbSendQuery(mydb, "USE finance;")
 
 # Enter data
+  addedRecords <- 0
   for(sNr in 1:nrow(qData)) {
     tickerID <- ticker[qData[sNr,"symbol"], "tickerID"]; print(tickerID)
     
@@ -97,6 +98,8 @@ if(file.exists("dbFunctions.R")) {
       VALUES ('", qData[sNr, "Trade Time"], "', '", tickerID, "', '", qData[sNr, "Last"], "');", sep="")
       print(query)
       rs <- dbSendQuery(mydb, query)
+      
+      addedRecords <- addedRecords + 1
         
     }
 
@@ -109,7 +112,7 @@ if(file.exists("dbFunctions.R")) {
 ### ADD NOTIFICATION ###
 ########################
   
-  noticeText <- paste("Added ", nrow(qData), " quotes to quote table", sep = "")
+  noticeText <- paste("Added ", addedRecords, " quotes to quote table", sep = "")
     
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
   on.exit(dbDisconnect(mydb))
