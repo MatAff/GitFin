@@ -1,21 +1,33 @@
 
+# OVERALL PROCESS
 # Load packages
-  library(quantmod)
-  library(RMySQL)
-  source("/home/finance/GitFin/dbFunctions.R")
+# Add starting notification
+# Get active tickers from database
+# Subset valid data (Remove quotes that don't have today's date)
+# Check if data exists in database and add if not
+# Add notification to notification table about how many quotes were added
 
-  
-  
+#####################
+### Load packages ###
+#####################
+
+library(quantmod)
+library(RMySQL)
+
+if(file.exists("dbFunctions.R")) {
+  source("dbFunctions.R")
+} else {
+  source("/home/finance/GitFin/dbFunctions.R")  
+}
+
 ########################
 ### ADD NOTIFICATION ###
 ########################
   
   noticeText <- "Starting quote collection process"
-  
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
   on.exit(dbDisconnect(mydb))
   rs <- dbSendQuery(mydb, "USE finance;")
-  
   dbNotification(noticeText, 10)
   dbFinDisconnect()
   
@@ -69,12 +81,25 @@
 
 # Enter data
   for(sNr in 1:nrow(qData)) {
-    tickerID <- ticker[qData[sNr,"symbol"], "tickerID"]
-    print(tickerID)
-    query <- paste("INSERT INTO quote (timestamp, tickerID, price)
+    tickerID <- ticker[qData[sNr,"symbol"], "tickerID"]; print(tickerID)
+    
+    # Check if data exists
+    # SELECT COUNT(*) FROM quote WHERE timestamp='2016-02-24 04:00:00' AND tickerID='200';
+    query <- paste("SELECT COUNT(*) FROM quote WHERE timestamp='", qData[sNr, "Trade Time"], "' AND tickerID='", tickerID, "';", sep="")
+    rs <- dbSendQuery(mydb, query)  
+    countData <- fetch(rs)
+    if(countData==1) { 
+      print("Record already exists, skipping") 
+    } else {
+      
+      # Add data to quote table
+      query <- paste("INSERT INTO quote (timestamp, tickerID, price)
       VALUES ('", qData[sNr, "Trade Time"], "', '", tickerID, "', '", qData[sNr, "Last"], "');", sep="")
-    print(query)
-    rs <- dbSendQuery(mydb, query)
+      print(query)
+      rs <- dbSendQuery(mydb, query)
+        
+    }
+
   }
   
 # Disconnect
@@ -84,7 +109,7 @@
 ### ADD NOTIFICATION ###
 ########################
   
-  noticeText <- paste("Added ", nrow(aData), " quotes to quote table", sep = "")
+  noticeText <- paste("Added ", nrow(qData), " quotes to quote table", sep = "")
     
   mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
   on.exit(dbDisconnect(mydb))
