@@ -1,4 +1,7 @@
 
+# Version history
+# MA 2016-02-24: Using Sys.time with correction instead of CURDATE(), since time is based on UTC
+
 # Load packages
   source("dbFunctions.R")
 
