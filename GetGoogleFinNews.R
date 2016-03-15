@@ -108,11 +108,15 @@ newsData <- c()
 for(tNr in 1:nrow(ticker)) {
   
   # Compile url
-  urlString <- paste("https://www.google.com/finance/company_news?q=NASDAQ%3A", ticker[tNr,"symbol"], sep="")
+  urlString <- paste("http://www.google.com/finance/company_news?q=NASDAQ%3A", ticker[tNr,"symbol"], sep="")
   print(urlString)
   
   # Pull data
   # temp <- getURL(urlString)
+  
+  
+  #con = url(urlString); htmlCode = readLines(con, method = "curl"); close(con)
+  
   con = url(urlString); htmlCode = readLines(con); close(con)
 
   # Get section after: <div id="news-main". class="sfe-section">
