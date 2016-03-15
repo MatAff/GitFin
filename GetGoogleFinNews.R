@@ -3,11 +3,13 @@
 ### Load packages ###
 #####################
 
+# setwd("C:\\Users\\Mathijs\\Documents\\Projects\\Fin\\GitFin\\GitFin")
+
 library(XML)
 library(lubridate)
 library(quantmod)
 library(RMySQL)
-library(RCurl)
+# library(RCurl)
 # require(XML)
 
 
@@ -110,7 +112,7 @@ for(tNr in 1:nrow(ticker)) {
   print(urlString)
   
   # Pull data
-  temp <- getURL(urlString)
+  # temp <- getURL(urlString)
   con = url(urlString); htmlCode = readLines(con); close(con)
 
   # Get section after: <div id="news-main". class="sfe-section">
