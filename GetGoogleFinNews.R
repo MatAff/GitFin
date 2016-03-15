@@ -3,8 +3,6 @@
 ### Load packages ###
 #####################
 
-install.packages("RCurl")
-
 library(XML)
 library(lubridate)
 library(quantmod)
