@@ -110,6 +110,7 @@ for(tNr in 1:nrow(ticker)) {
   print(urlString)
   
   # Pull data
+  setInternet2(use = TRUE)
   con = url(urlString); htmlCode = readLines(con); close(con)
 
   # Get section after: <div id="news-main". class="sfe-section">
