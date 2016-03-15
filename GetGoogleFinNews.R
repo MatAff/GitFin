@@ -3,11 +3,13 @@
 ### Load packages ###
 #####################
 
+install.packages("RCurl")
+
 library(XML)
 library(lubridate)
 library(quantmod)
 library(RMySQL)
-require(RCurl)
+library(RCurl)
 # require(XML)
 
 
