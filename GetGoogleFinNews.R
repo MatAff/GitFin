@@ -7,7 +7,7 @@ library(XML)
 library(lubridate)
 library(quantmod)
 library(RMySQL)
-# require(RCurl)
+require(RCurl)
 # require(XML)
 
 
