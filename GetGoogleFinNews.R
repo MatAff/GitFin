@@ -107,6 +107,7 @@ for(tNr in 1:nrow(ticker)) {
   
   # Compile url
   urlString <- paste("https://www.google.com/finance/company_news?q=NASDAQ%3A", ticker[tNr,"symbol"], sep="")
+  print(urlString)
   
   # Pull data
   con = url(urlString); htmlCode = readLines(con); close(con)
