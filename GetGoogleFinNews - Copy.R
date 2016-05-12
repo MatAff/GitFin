@@ -3,13 +3,11 @@
 ### Load packages ###
 #####################
 
-# setwd("C:\\Users\\Mathijs\\Documents\\Projects\\Fin\\GitFin\\GitFin")
-
 library(XML)
 library(lubridate)
 library(quantmod)
 library(RMySQL)
-# library(RCurl)
+# require(RCurl)
 # require(XML)
 
 
@@ -51,24 +49,13 @@ if(file.exists("dbFunctions.R")) {
 # on.exit(dbDisconnect(mydb))
 # rs <- dbSendQuery(mydb, "USE finance;")
 # 
-# # Add column
+# # Add table
 # dbSendQuery(mydb, "ALTER TABLE basicnews ADD externalsource varchar(255);")
 # 
 # # Disconnect
 # dbFinDisconnect()
 
 # SELECT * FROM basicnews ORDER BY newsID DESC LIMIT 10;
-
-# # Connect
-# mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
-# on.exit(dbDisconnect(mydb))
-# rs <- dbSendQuery(mydb, "USE finance;")
-# 
-# # Add column
-# dbSendQuery(mydb, "ALTER TABLE basicnews ADD wasChecked tinyint(1);")
-# 
-# # Disconnect
-# dbFinDisconnect()
 
 ########################
 ### ADD NOTIFICATION ###
@@ -119,8 +106,9 @@ newsData <- c()
 for(tNr in 1:nrow(ticker)) {
   
   # Compile url
-  urlString <- paste("http://www.google.com/finance/company_news?q=NASDAQ%3A", ticker[tNr,"symbol"], sep="")
-  print(urlString)
+  urlString <- paste("https://www.google.com/finance/company_news?q=NASDAQ%3A", ticker[tNr,"symbol"], sep="")
+  
+  # Pull data
   con = url(urlString); htmlCode = readLines(con); close(con)
 
   # Get section after: <div id="news-main". class="sfe-section">
