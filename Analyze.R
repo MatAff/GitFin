@@ -35,6 +35,8 @@ if(file.exists("dbFunctions.R")) {
 }
 
 
+# Hi
+
 # Function to run predictive model based on news data
 PredictRF <- function() {
   
