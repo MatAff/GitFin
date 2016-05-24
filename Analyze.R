@@ -135,7 +135,7 @@ if(is.na(prediction)==FALSE) {
   # Add to notification
   for(rNr in 1:nrow(prediction)) {
     # Add message
-    message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction")])
+    message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction")], collapse=" ")
     dbNotification(message, 50)
   }
   
