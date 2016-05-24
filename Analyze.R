@@ -109,7 +109,7 @@ PredictRF <- function() {
     # Compare to cutoff
     #cutoff <- 1.0225
     cutoff <- 1.01
-    sData <- nData[nData$prediction>=cutoff,c("tickerID", "timestamp", "prediction","text")]
+    sData <- nData[nData$prediction>=cutoff,c("tickerID", "timestamp", "prediction","tickerTags","text")]
     if(nrow(sData)>0) { 
       print(sData)  
       # NotifyBeep(n=nrow(sData), sound="treasure")
@@ -142,7 +142,7 @@ if(is.na(prediction)==FALSE) {
   
   for(rNr in 1:nrow(prediction)) {
     # Add message
-    message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction")], collapse=" ")
+    message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction","tickerTags")], collapse=" ")
     dbNotification(message, 50)
   }
   
