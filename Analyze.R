@@ -107,8 +107,8 @@ PredictRF <- function() {
     # plot(prediction)
     
     # Compare to cutoff
-    #cutoff <- 1.0225
-    cutoff <- 1.01
+    cutoff <- 1.0225
+    #cutoff <- 1.01
     sData <- nData[nData$prediction>=cutoff,c("tickerID", "timestamp", "prediction","tickerTags","text")]
     if(nrow(sData)>0) { 
       print(sData)  
