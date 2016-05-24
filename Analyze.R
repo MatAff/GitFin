@@ -24,7 +24,7 @@ if(file.exists("dbFunctions.R")) {
   myUser <- "remote"
   myPassword <- "nederland"
 } else {
-  setwd("/home/finance/GitFin/")
+  #setwd("/home/finance/GitFin/")
   source("/home/finance/GitFin/dbFunctions.R")
   source("/home/finance/GitFin/SourceTimeFunction.R")
   source("/home/finance/GitFin/SourceNewsFunctions.R")
@@ -41,7 +41,7 @@ if(file.exists("dbFunctions.R")) {
 PredictRF <- function() {
   
   # Load model
-  load(file="Model_RF.RData")
+  load(file="/home/finance/GitFin/Model_RF.RData")
   
   # Pull data
   # nData <- PullData("select * from basicnews order by newsID desc limit 100;")
