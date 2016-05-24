@@ -132,6 +132,15 @@ if(is.na(prediction)==FALSE) {
   # Print
   print(prediction) 
   
+  # Add to notification
+  for(rNr in 1:nrow(prediction)) {
+    # Add message
+    message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction")])
+    dbNotification(message, 50)
+  }
+  
+  
+  
   # Send mail  
   
 }
