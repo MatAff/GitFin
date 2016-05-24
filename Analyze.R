@@ -133,11 +133,23 @@ if(is.na(prediction)==FALSE) {
   print(prediction) 
   
   # Add to notification
+  
+  # Connect
+  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+  on.exit(dbDisconnect(mydb))
+  rs <- dbSendQuery(mydb, "USE finance;")
+  
+  
   for(rNr in 1:nrow(prediction)) {
     # Add message
     message <- paste(prediction[rNr,c("tickerID", "timestamp", "prediction")], collapse=" ")
     dbNotification(message, 50)
   }
+  
+  
+  # Disconnect
+  dbFinDisconnect()
+  
   
   
   
