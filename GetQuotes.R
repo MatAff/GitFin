@@ -88,6 +88,9 @@ if(file.exists("dbFunctions.R")) {
   qData <- getQuote(selectSymbols)
   qData[,"symbol"] <- row.names(qData)
   
+# Fix - Update names to align with expected
+  names(qData) <- c("Trade Time", "Last", "Change", "Name", "symbol")
+  
 # Print data to screen - for dev purposes
   print(qData[1:6,c("symbol", "Trade Time", "Last")])
 
