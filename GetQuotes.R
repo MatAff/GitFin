@@ -14,6 +14,29 @@
 library(quantmod)
 library(RMySQL)
 
+####################
+### GetQuote Fix ###
+####################
+
+# Based on: https://github.com/joshuaulrich/quantmod/issues/197
+
+require(jsonlite)
+
+getQuote <- function(ticks) {
+  qRoot <- "https://query1.finance.yahoo.com/v7/finance/quote?fields=symbol,longName,regularMarketPrice,regularMarketChange,regularMarketTime&formatted=false&symbols="
+  z <- fromJSON(paste(qRoot, paste(ticks, collapse=","), sep=""))
+  z <- z$quoteResponse$result[,c("symbol", "regularMarketTime", "regularMarketPrice", "regularMarketChange", "longName")]
+  row.names(z) <- z$symbol
+  z$symbol <- NULL
+  names(z) <- c("Time", "Price", "Change", "Name")
+  z$Time <- as.POSIXct(z$Time, origin = '1970-01-01 00:00:00')
+  return(z)
+}
+
+#########################
+### LOAD DB FUNCTIONS ###
+#########################
+
 if(file.exists("dbFunctions.R")) {
   source("dbFunctions.R")
 } else {
