@@ -49,23 +49,27 @@ PredictRF <- function() {
   mydb = dbConnect(MySQL(), user='remote', password='nederland', host='ec2-54-173-22-144.compute-1.amazonaws.com')
   on.exit(dbDisconnect(mydb))
   rs <- dbSendQuery(mydb, "USE finance;")
+  dbNotification("Starting analyze process", 50)
   sTime <- Sys.time()
     nData <- dbFetch(dbSendQuery(mydb, "select * from basicnews order by newsID desc limit 100;"), n=-1)
     dbSendQuery(mydb, "UPDATE basicnews SET wasChecked=1")
     tData <- dbFetch(dbSendQuery(mydb, "SELECT * FROM ticker;"), n=-1)
   dbClearResult(dbListResults(mydb)[[1]])
   print(paste("Time taken:", round((as.numeric(Sys.time())-as.numeric(sTime))/60,2), " minutes"))
+  dbNotification("Analyse: Pulled news and ticker data", 50)
   
   # Add tickerID to news data and subset
   stData <- tData[tData$isActive==1,]
   row.names(stData) <- stData$symbol
   nData$tickerID <- stData[nData$tickerTags,"tickerID"]
   nData <- nData[!is.na(nData$tickerID),]; dim(nData)
+  dbNotification("Analyse: add tickerID to news data and subset", 50)
   
   # Check for recent news 
   nData <- ProcessTimestamp(nData)
   nData <- nData[nData$dateTimeNum>=as.POSIXlt(Sys.time(), tz="America/New_York")-60*60*12,]
   nData <- nData[is.na(nData$wasChecked),]
+  dbNotification("Analyse: Check recent news", 50)
   
   # Notify
   print(nrow(nData))
@@ -83,8 +87,10 @@ PredictRF <- function() {
     fdtm <- DocumentTermMatrix(fCorpus); fdtm
     
     # Create Bigrams
+    dbNotification("Analyse: Before NGram", 50)
     BigramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
     biGrams <- DocumentTermMatrix(fCorpus, control = list(tokenize = BigramTokenizer))
+    dbNotification("Analyse: After NGram", 50)
     
     # Create term matrix
     tMatrix <- as.matrix(fdtm); dim(tMatrix)
