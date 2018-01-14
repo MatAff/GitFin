@@ -64,28 +64,33 @@ PredictRF <- function() {
   #dbFinDisconnect()
 
   sTime <- Sys.time()
-    nData <- dbFetch(dbSendQuery(mydb, "select * from basicnews order by newsID desc limit 100;"), n=-1)
+    nData <- dbFetch(dbSendQuery(mydb, "select * from basicnews order by newsID desc limit 500;"), n=-1)
     dbSendQuery(mydb, "UPDATE basicnews SET wasChecked=1")
     tData <- dbFetch(dbSendQuery(mydb, "SELECT * FROM ticker;"), n=-1)
   dbClearResult(dbListResults(mydb)[[1]])
   print(paste("Time taken:", round((as.numeric(Sys.time())-as.numeric(sTime))/60,2), " minutes"))
   dbNotification("Analyze: Pulled news and ticker data", 50)
+  print(nrow(nData))
   
   # Add tickerID to news data and subset
   stData <- tData[tData$isActive==1,]
   row.names(stData) <- stData$symbol
+  print(nData$tickerTags)
   nData$tickerID <- stData[nData$tickerTags,"tickerID"]
+  print(head(nData))
   nData <- nData[!is.na(nData$tickerID),]; dim(nData)
   dbNotification("Analyze: add tickerID to news data and subset", 50)
+  print(nrow(nData))
   
   # Check for recent news 
   nData <- ProcessTimestamp(nData)
-  nData <- nData[nData$dateTimeNum>=as.POSIXlt(Sys.time(), tz="America/New_York")-60*60*12,]
-  nData <- nData[is.na(nData$wasChecked),]
+  #nData <- nData[nData$dateTimeNum>=as.POSIXlt(Sys.time(), tz="America/New_York")-60*60*12,]
+  #nData <- nData[is.na(nData$wasChecked),]
   dbNotification("Analyze: Check recent news", 50)
   
   # Notify
   print(nrow(nData))
+  dbNotification(paste("Analyze: Number of news records:", nrow(nData)), 50)
   if(nrow(nData)>0) {
     
     # Merge title and description
@@ -126,8 +131,9 @@ PredictRF <- function() {
     # plot(prediction)
     
     # Compare to cutoff
-    cutoff <- 1.0225
+    #cutoff <- 1.0225
     #cutoff <- 1.01
+    cutoff <- 0.0
     sData <- nData[nData$prediction>=cutoff,c("tickerID", "timestamp", "prediction","tickerTags","text")]
     if(nrow(sData)>0) { 
       print(sData)  
@@ -140,6 +146,9 @@ PredictRF <- function() {
   } else {
     return(NA)
   }
+
+  # Disconnect
+  dbFinDisconnect()
 }
 
 # Run prediction
@@ -155,7 +164,8 @@ if(is.na(prediction)==FALSE) {
   # Add to notification
   
   # Connect
-  mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
+  mydb = dbConnect(MySQL(), user='finance', password='nederland', host='localhost')
+  #mydb = dbConnect(MySQL(), user=myUser, password=myPassword, host=myHost)
   on.exit(dbDisconnect(mydb))
   rs <- dbSendQuery(mydb, "USE finance;")
   
